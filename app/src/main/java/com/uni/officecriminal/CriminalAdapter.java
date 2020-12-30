@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import com.uni.officecriminal.model.Criminal;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -26,15 +28,13 @@ public class CriminalAdapter extends RecyclerView.Adapter<CriminalAdapter.ViewHo
         return viewHolder;
     }
 
-    int count = 0;
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if(count > 20) return;
         Criminal criminal = criminals.get(position);
         holder.mTvTitle.setText(criminal.getTitle());
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         holder.mTvDate.setText(dateFormat.format(criminal.getCreationDate()));
-        count++;
+        holder.setItem(criminal);
     }
 
     @Override
@@ -45,11 +45,19 @@ public class CriminalAdapter extends RecyclerView.Adapter<CriminalAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mTvTitle;
         public final TextView mTvDate;
+        private Criminal criminal;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvTitle = itemView.findViewById(R.id.item_tv_title);
             mTvDate = itemView.findViewById(R.id.item_tv_date);
+            itemView.setOnClickListener(v -> {
+                EventBus.getDefault().post(new CriminalClickEvent(criminal));
+            });
+        }
+
+        public void setItem(Criminal criminal) {
+            this.criminal = criminal;
         }
     }
 

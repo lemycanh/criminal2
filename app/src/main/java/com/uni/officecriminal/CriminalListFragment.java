@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.uni.officecriminal.model.Criminal;
+import com.uni.officecriminal.model.CriminalDao;
 
 
 /**
@@ -33,7 +34,8 @@ public class CriminalListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_criminal_list, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.rclCriminals);
-        CriminalAdapter adapter = new CriminalAdapter(Criminal.generateCriminals());
+        CriminalDao criminalDao = CriminalApplication.getInstance().getDaoSession().getCriminalDao();
+        CriminalAdapter adapter = new CriminalAdapter(criminalDao.loadAll());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return v;
